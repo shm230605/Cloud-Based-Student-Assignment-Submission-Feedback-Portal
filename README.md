@@ -29,8 +29,6 @@ flowchart TD
 4. The storage adapter writes file bytes to a generated private object key. The API stores that key, file metadata, version, timestamp, and status in SQL.
 5. A teacher downloads a file through an ownership-checked endpoint, then posts marks and written feedback. The student sees the grade on refresh.
 
-The detailed architecture, entity relationships, trust boundaries, cloud-service mappings, and scaling notes are in [docs/architecture.md](docs/architecture.md).
-
 ## Technology Stack
 
 | Layer | Technology |
@@ -79,7 +77,7 @@ The detailed architecture, entity relationships, trust boundaries, cloud-service
 
 `users` own courses as teachers; `courses` contain assignments; each assignment receives multiple student submission versions. Submission rows contain `storage_path`, filename, size, timestamp, status, marks, and feedback. The file bytes never go into a database binary column. Queries are indexed on user roles, assignment/course ownership, submission student, status, deadline, and timestamps.
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```text
 .
@@ -134,7 +132,7 @@ Typical errors are `401` unauthenticated/expired token, `403` wrong role, `404` 
 - Demo teacher provisioning is environment-based. Replace it with audited administrative provisioning or managed identity integration.
 
 
-## Future Improvements
+## 📈 Future Improvements
 
 Add course enrollment/rosters, teacher/admin invitation flow, assignment archive UI, signed direct-to-storage uploads, resumable uploads, malware scanning worker, notifications, audit log, rubric grading, token revocation, Alembic migrations, observability metrics, backup drills, and end-to-end browser tests. For 100,000 learners near a deadline, route uploads directly to object storage using short-lived signed URLs, process scans/notifications through queues, scale stateless API instances horizontally, pool database connections, and apply CDN/cache policies to read-heavy static/course data.
 

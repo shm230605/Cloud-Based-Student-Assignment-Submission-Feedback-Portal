@@ -1,0 +1,43 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-portal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your root .env file}
+      POSTGRES_DB: ${POSTGRES_DB:-portal}
+    volumes:
+      - portal-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-portal} -d ${POSTGRES_DB:-portal}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-portal}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-portal}
+      FRONTEND_ORIGIN: http://localhost:8080
+      LOCAL_STORAGE_DIR: /app/private_uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      - portal-uploads:/app/private_uploads
+    depends_on:
+      database:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  portal-postgres:
+  portal-uploads:

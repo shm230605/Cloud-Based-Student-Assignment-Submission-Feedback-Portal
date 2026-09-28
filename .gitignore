@@ -1,0 +1,32 @@
+# Environment and credentials
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Local application data
+backend/portal.db
+backend/private_uploads/
+backend/data/
+
+# Frontend build/dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+
+# Editor and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

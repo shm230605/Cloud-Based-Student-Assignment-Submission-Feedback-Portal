@@ -18,6 +18,17 @@ function SignIn({ onSignIn }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  function changeMode(nextRegisterMode) {
+    setRegisterMode(nextRegisterMode)
+    setPassword('')
+    setError('')
+    if (nextRegisterMode) {
+      setName('')
+      setEmail('')
+    } else {
+      setEmail('teacher@example.edu')
+    }
+  }
   async function submit(event) {
     event.preventDefault(); setBusy(true); setError('')
     try {
@@ -36,9 +47,10 @@ function SignIn({ onSignIn }) {
       <div className="visual-footer"><span>01 / LEARN</span><span>Built for the work behind the work</span></div><div className="orbit orbit-one" /><div className="orbit orbit-two" />
     </section>
     <section className="login-panel"><div className="login-mobile-brand"><span className="brand-mark"><Cloud size={18} /></span> FIELDNOTE</div><div className="login-form-wrap">
-      <div className="eyebrow muted">YOUR LEARNING SPACE</div><h2>{registerMode ? 'Join your class.' : 'Welcome back.'}</h2><p className="login-intro">{registerMode ? 'Create a student account to access coursework.' : 'Sign in to pick up where your class left off.'}</p>
+      <div className="auth-tabs" role="tablist" aria-label="Account access"><button type="button" role="tab" aria-selected={!registerMode} className={!registerMode ? 'active' : ''} onClick={() => changeMode(false)}>Sign in</button><button type="button" role="tab" aria-selected={registerMode} className={registerMode ? 'active' : ''} onClick={() => changeMode(true)}>Create account</button></div>
+      <div className="eyebrow muted">{registerMode ? 'NEW STUDENT ACCOUNT' : 'YOUR LEARNING SPACE'}</div><h2>{registerMode ? 'Join your class.' : 'Welcome back.'}</h2><p className="login-intro">{registerMode ? 'Create your student account to access coursework and feedback.' : 'One secure sign-in for students and faculty.'}</p>
       <form onSubmit={submit} className="login-form">{registerMode && <label>Your name<input value={name} onChange={(event) => setName(event.target.value)} required minLength="2" autoComplete="name" /></label>}<label>Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="username" /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={registerMode ? 'At least 10 characters' : 'Use the password from your local environment'} required minLength={registerMode ? 10 : undefined} autoComplete={registerMode ? 'new-password' : 'current-password'} /></label>{error && <div className="inline-error">{error}</div>}<button className="button button-dark full-button" disabled={busy}>{busy ? 'Please wait…' : registerMode ? 'Create student account' : 'Sign in'} <ArrowUpRight size={16} /></button></form>
-      <button className="mode-switch" onClick={() => { setRegisterMode(!registerMode); setError('') }}>{registerMode ? 'Already have an account? Sign in' : 'New to Fieldnote? Create a student account'}</button>
+      <div className="account-note"><ShieldCheck size={16} /><span>{registerMode ? 'Faculty access is provisioned by a course administrator.' : 'Your dashboard and permissions are matched to your account.'}</span></div>
       {!registerMode && <div className="demo-access"><ShieldCheck size={16} /><div><b>Demo workspace</b><span>Use the seeded teacher or student account from your local environment setup.</span></div></div>}<div className="login-legal">PRIVATE BY DEFAULT <span>·</span> YOUR CLASS, YOUR WORK</div>
     </div></section>
   </main>
